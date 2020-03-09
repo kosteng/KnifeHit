@@ -28,7 +28,13 @@ public class KnifeController
         if (_currentKnife.IsReadyToFly)
         {
             _currentKnife.Move();
+            _knifeViewsToScene.Enqueue(_currentKnife);
             SetNextKnife();
+        }
+        foreach (var knife in _knifeViewsToScene)
+        {
+            if (knife.IsReadyToFly)
+                knife.Move();
         }
     }
 
