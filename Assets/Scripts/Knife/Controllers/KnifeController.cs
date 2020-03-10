@@ -18,10 +18,11 @@ public class KnifeController
     }
     public void Start()
     {
+        indexCurrentKnife = 0;
         GetKnifies(CountKnifiesOnLevel);
         SetNextKnife();
         Subscribe();
-		indexCurrentKnife = 0;
+
 
     }
 
@@ -60,8 +61,9 @@ public class KnifeController
 
     private void Hit()
     {
-        _knifeViewsToScene[indexCurrentKnife - 1].transform.SetParent(_knifeViewsToScene[indexCurrentKnife - 1].transform);
-        _knifeViewsToScene[indexCurrentKnife - 1].IsReadyToMove = false;
+        Debug.Log(indexCurrentKnife);
+        _knifeViewsToScene[indexCurrentKnife - 2].transform.SetParent(_knifeViewsToScene[indexCurrentKnife - 2].CollisionObject.transform);
+        _knifeViewsToScene[indexCurrentKnife - 2].IsReadyToMove = false;
     }
 
     private void Subscribe()

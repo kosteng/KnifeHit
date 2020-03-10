@@ -14,26 +14,43 @@ public class KnifeView : MonoBehaviour
 	{
 		transform.Translate(0f, Speed * Time.deltaTime, 0f);
 	}
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("CoinBonus"))
+        {
+            OnCoinBonusCollision?.Invoke();
+            return;
+        }
+        if (collision.gameObject.tag == "TargetCicle")//CompareTag("TargetCicle"))
+        {
+            Debug.Log(1);
 
-	private void OnCollisionEnter2D(Collision2D collision)
+            CollisionObject = collision.gameObject;
+            OnTargetCicleCollision?.Invoke();
+            return;
+        }
+    }
+    /*
+    private void OnCollisionEnter2D(Collision2D collision)
 	{
 		if (collision.gameObject.CompareTag("CoinBonus"))
 		{
 			OnCoinBonusCollision?.Invoke();
-//			return;
+		return;
 		}
-        if (collision.gameObject.CompareTag("TargetCicle"))
+        if (collision.gameObject.tag == "TargetCicle")//CompareTag("TargetCicle"))
         {
+            Debug.Log(1);
             OnKnifeCollision?.Invoke();
             CollisionObject = collision.gameObject;
-            Debug.Log(1);
-//            return;
+           
+            return;
         }
 
         if (collision.gameObject == gameObject)
         {
             OnKnifeCollision?.Invoke();
-//return;
+return;
         }
-    }
+    }*/
 }
