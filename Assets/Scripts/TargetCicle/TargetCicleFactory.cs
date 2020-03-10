@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TargetCicleFactory : MonoBehaviour
+public class TargetCicleFactory : MonoBehaviour, IFactory<TargetCicleView>
 {
     [SerializeField] private GameObject _parent;
     [SerializeField] private TargetCicleView _targetCiclePrefab;

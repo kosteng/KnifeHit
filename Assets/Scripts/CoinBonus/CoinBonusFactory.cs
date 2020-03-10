@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-public class CoinBonusFactory : MonoBehaviour
+public class CoinBonusFactory : MonoBehaviour, IFactory<CoinBonusView>
 {
     [SerializeField] private GameObject _parent;
     [SerializeField] private CoinBonusView _coinBonusPrefab;

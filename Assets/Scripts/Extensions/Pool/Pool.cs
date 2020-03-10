@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 
-public class KnifePool<T>
+public class Pool<T>
 {
-    private IFactory<T> _knifeFactory;
+    private IFactory<T> _factory;
     public Queue<T> PoolQueue = new Queue<T>();
 
-    public KnifePool(IFactory<T> knifeFactory)
+    public Pool(IFactory<T> factory)
     {
-        _knifeFactory = knifeFactory;
+		_factory = factory;
     }
 
     public T GetObject()
     {
         if (PoolQueue.Count > 0)
             return PoolQueue.Dequeue();
-        return _knifeFactory.Create();
+        return _factory.Create();
     }
 
     public void Back(T knife)

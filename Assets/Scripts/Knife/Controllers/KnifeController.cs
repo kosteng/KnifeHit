@@ -1,54 +1,59 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class KnifeController 
 {
-    private Queue<KnifeView> _knifeViewsToScene;
+	private const int CountKnifiesOnLevel = 10;
+	private const int LeftMouseButton = 0;
+	private int indexCurrentKnife;
+    private List<KnifeView> _knifeViewsToScene;
     private KnifeView _currentKnife;
-    private readonly KnifePool<KnifeView> _knifePool;
+    private readonly Pool<KnifeView> _knifePool;
     private readonly KnifeFactory _knifeFactory;
 
     public KnifeController (KnifeFactory knifeFactory)
     {
-        _knifeViewsToScene = new Queue<KnifeView>();
-        _knifePool = new KnifePool<KnifeView>(knifeFactory);
+        _knifeViewsToScene = new List<KnifeView>();
+        _knifePool = new Pool<KnifeView>(knifeFactory);
     }
     public void Start()
     {
-        GetKnifies(10);
+
+		indexCurrentKnife = 0;
+		GetKnifies(CountKnifiesOnLevel);
         SetNextKnife();
-        Debug.Log(_knifeViewsToScene.Count);
     }
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            _currentKnife.IsReadyToFly = !_currentKnife.IsReadyToFly;
-        if (_currentKnife.IsReadyToFly)
-        {
-            _currentKnife.Move();
-            _knifeViewsToScene.Enqueue(_currentKnife);
+        if (Input.GetMouseButtonDown(LeftMouseButton))
+            _currentKnife.IsReadyToMove = !_currentKnife.IsReadyToMove;
+        if (_currentKnife.IsReadyToMove)      
             SetNextKnife();
-        }
-        foreach (var knife in _knifeViewsToScene)
-        {
-            if (knife.IsReadyToFly)
-                knife.Move();
-        }
-    }
+		MoveAllKnifies();
+	}
 
     private void GetKnifies (int count)
     {
         for (int i = 0; i < count; i++)
         {
-            _knifeViewsToScene.Enqueue(_knifePool.GetObject());
+			_knifeViewsToScene.Add(_knifePool.GetObject());
         }
     }
 
     private void SetNextKnife()
     {
-        _currentKnife = _knifeViewsToScene.Dequeue();
-    }
-        
+		if (indexCurrentKnife >= _knifeViewsToScene.Count) return;		
+		_currentKnife = _knifeViewsToScene[indexCurrentKnife];
+		indexCurrentKnife++;
+	}
+    
+	private void MoveAllKnifies()
+	{
+		foreach (var knife in _knifeViewsToScene)
+		{
+			if (knife.IsReadyToMove)
+				knife.Move();
+		}
+	}
 }
