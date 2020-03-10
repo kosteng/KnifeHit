@@ -6,13 +6,13 @@ public class KnifeController
 {
     private Queue<KnifeView> _knifeViewsToScene;
     private KnifeView _currentKnife;
-    private readonly KnifePool _knifePool;
+    private readonly KnifePool<KnifeView> _knifePool;
     private readonly KnifeFactory _knifeFactory;
 
     public KnifeController (KnifeFactory knifeFactory)
     {
         _knifeViewsToScene = new Queue<KnifeView>();
-        _knifePool = new KnifePool(knifeFactory);
+        _knifePool = new KnifePool<KnifeView>(knifeFactory);
     }
     public void Start()
     {

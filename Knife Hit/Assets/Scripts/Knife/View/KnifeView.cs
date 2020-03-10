@@ -9,4 +9,10 @@ public class KnifeView : MonoBehaviour
     {
         transform.Translate(0f, 10f * Time.deltaTime, 0f);
     }
+	private void Update()
+	{
+
+		if (IsReadyToFly)
+			Move();
+	}
 }

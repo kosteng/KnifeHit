@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class KnifeFactory : MonoBehaviour
+public class KnifeFactory : MonoBehaviour, IFactory<KnifeView>
 {
     [SerializeField] private GameObject _parent;
     [SerializeField] private KnifeView _knifePrefab;
