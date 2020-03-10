@@ -18,16 +18,17 @@ public class KnifeController
     }
     public void Start()
     {
-
-		indexCurrentKnife = 0;
-		GetKnifies(CountKnifiesOnLevel);
+        GetKnifies(CountKnifiesOnLevel);
         SetNextKnife();
+        Subscribe();
+		indexCurrentKnife = 0;
+
     }
 
     public void Update()
     {
         if (Input.GetMouseButtonDown(LeftMouseButton))
-            _currentKnife.IsReadyToMove = !_currentKnife.IsReadyToMove;
+            _currentKnife.IsReadyToMove = true;
         if (_currentKnife.IsReadyToMove)      
             SetNextKnife();
 		MoveAllKnifies();
@@ -56,4 +57,18 @@ public class KnifeController
 				knife.Move();
 		}
 	}
+
+    private void Hit()
+    {
+        _knifeViewsToScene[indexCurrentKnife - 1].transform.SetParent(_knifeViewsToScene[indexCurrentKnife - 1].transform);
+        _knifeViewsToScene[indexCurrentKnife - 1].IsReadyToMove = false;
+    }
+
+    private void Subscribe()
+    {
+    	foreach (var knife in _knifeViewsToScene)
+        {
+            knife.OnTargetCicleCollision += Hit;
+        }
+    }
 }
