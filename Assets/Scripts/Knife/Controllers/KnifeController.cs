@@ -32,7 +32,7 @@ public class KnifeController
     {
         if (Input.GetMouseButtonDown(LeftMouseButton)&& !isEmptyKnifies)
             _currentKnife.IsReadyToMove = true;
-        if (_currentKnife.IsReadyToMove)      
+        if (_currentKnife.IsReadyToMove)
             SetNextKnife();
 		MoveAllKnifies();
 	}
@@ -53,6 +53,7 @@ public class KnifeController
 			return;
 		}
 		_currentKnife = _knifeViewsToScene[indexCurrentKnife];
+        _currentKnife.gameObject.SetActive(true);
 		indexCurrentKnife++;
 	}
     
@@ -67,7 +68,6 @@ public class KnifeController
 
     private void Hit()
     {
-        Debug.Log(indexCurrentKnife);
         _knifeViewsToScene[indexKnifeHit].transform.SetParent(_knifeViewsToScene[indexKnifeHit].CollisionObject.transform);
         _knifeViewsToScene[indexKnifeHit].IsReadyToMove = false;
 		indexKnifeHit++;

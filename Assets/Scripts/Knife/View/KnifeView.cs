@@ -6,7 +6,10 @@ public class KnifeView : MonoBehaviour
 	public event Action OnKnifeCollision;
 	public event Action OnCoinBonusCollision;
     public event Action OnTargetCicleCollision;
-    public GameObject CollisionObject;
+    [SerializeField] private Rigidbody2D _rigidbody;
+
+
+    public GameObject CollisionObject { get; private set; }
 
     public float Speed;
 	public bool IsReadyToMove = false;
@@ -23,12 +26,20 @@ public class KnifeView : MonoBehaviour
         }
         if (collision.gameObject.tag == "TargetCicle")//CompareTag("TargetCicle"))
         {
-            Debug.Log(1);
-
             CollisionObject = collision.gameObject;
             OnTargetCicleCollision?.Invoke();
             return;
         }
+    }
+
+    public void RigidbodyDynamicBodyType()
+    {
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    public void RigidbodyKinematicBodyType()
+    {
+        _rigidbody.bodyType = RigidbodyType2D.Kinematic;
     }
     /*
     private void OnCollisionEnter2D(Collision2D collision)

@@ -10,6 +10,7 @@ public class KnifeFactory : MonoBehaviour, IFactory<KnifeView>
     {
         var knife = Instantiate(_knifePrefab, _startPosition, Quaternion.identity);
         SetParent(knife);
+        knife.gameObject.SetActive(false);
         return knife;
     }
 
