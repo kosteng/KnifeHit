@@ -6,6 +6,8 @@ public class KnifeController
 	private const int CountKnifiesOnLevel = 10;
 	private const int LeftMouseButton = 0;
 	private int indexCurrentKnife;
+	private int indexKnifeHit;
+	private bool isEmptyKnifies;
     private List<KnifeView> _knifeViewsToScene;
     private KnifeView _currentKnife;
     private readonly Pool<KnifeView> _knifePool;
@@ -19,16 +21,16 @@ public class KnifeController
     public void Start()
     {
         indexCurrentKnife = 0;
-        GetKnifies(CountKnifiesOnLevel);
+		indexKnifeHit = 0;
+		isEmptyKnifies = false;
+		GetKnifies(CountKnifiesOnLevel);
         SetNextKnife();
         Subscribe();
-
-
     }
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(LeftMouseButton))
+        if (Input.GetMouseButtonDown(LeftMouseButton)&& !isEmptyKnifies)
             _currentKnife.IsReadyToMove = true;
         if (_currentKnife.IsReadyToMove)      
             SetNextKnife();
@@ -45,7 +47,11 @@ public class KnifeController
 
     private void SetNextKnife()
     {
-		if (indexCurrentKnife >= _knifeViewsToScene.Count) return;		
+		if (indexCurrentKnife >= _knifeViewsToScene.Count)
+		{
+			isEmptyKnifies = !isEmptyKnifies;
+			return;
+		}
 		_currentKnife = _knifeViewsToScene[indexCurrentKnife];
 		indexCurrentKnife++;
 	}
@@ -62,9 +68,10 @@ public class KnifeController
     private void Hit()
     {
         Debug.Log(indexCurrentKnife);
-        _knifeViewsToScene[indexCurrentKnife - 2].transform.SetParent(_knifeViewsToScene[indexCurrentKnife - 2].CollisionObject.transform);
-        _knifeViewsToScene[indexCurrentKnife - 2].IsReadyToMove = false;
-    }
+        _knifeViewsToScene[indexKnifeHit].transform.SetParent(_knifeViewsToScene[indexKnifeHit].CollisionObject.transform);
+        _knifeViewsToScene[indexKnifeHit].IsReadyToMove = false;
+		indexKnifeHit++;
+	}
 
     private void Subscribe()
     {
