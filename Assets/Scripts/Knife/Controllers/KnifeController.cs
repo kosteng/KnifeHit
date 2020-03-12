@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KnifeController 
 {
-	private const int CountKnifiesOnLevel = 10;
+	private const int CountKnifiesOnLevel = 100;
 	private const int LeftMouseButton = 0;
 	private int indexCurrentKnife;
 	private int indexKnifeHit;
@@ -30,8 +30,11 @@ public class KnifeController
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(LeftMouseButton)&& !isEmptyKnifies)
+        if (Input.GetMouseButtonDown(LeftMouseButton) && !isEmptyKnifies)
+        {
             _currentKnife.IsReadyToMove = true;
+            _currentKnife.ActivedBoxCollider();
+        }
         if (_currentKnife.IsReadyToMove)
             SetNextKnife();
 		MoveAllKnifies();
@@ -54,6 +57,7 @@ public class KnifeController
 		}
 		_currentKnife = _knifeViewsToScene[indexCurrentKnife];
         _currentKnife.gameObject.SetActive(true);
+
 		indexCurrentKnife++;
 	}
     
@@ -78,6 +82,12 @@ public class KnifeController
     	foreach (var knife in _knifeViewsToScene)
         {
             knife.OnTargetCicleCollision += Hit;
+            knife.OnKnifeCollision += HitKnifeByKnife;
         }
+    }
+
+    private void HitKnifeByKnife()
+    {
+        _knifeViewsToScene[indexCurrentKnife].HitKnifeByKnife();
     }
 }

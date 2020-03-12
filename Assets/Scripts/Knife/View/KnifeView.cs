@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class KnifeView : MonoBehaviour
 {
-	public event Action OnKnifeCollision;
-	public event Action OnCoinBonusCollision;
-    public event Action OnTargetCicleCollision;
-    [SerializeField] private Rigidbody2D _rigidbody;
 
+    [SerializeField] private Rigidbody2D _rigidbody;
+    [SerializeField] private BoxCollider2D _boxCollider;
+
+    public event Action OnKnifeCollision;
+    public event Action OnCoinBonusCollision;
+    public event Action OnTargetCicleCollision;
 
     public GameObject CollisionObject { get; private set; }
 
@@ -22,13 +24,18 @@ public class KnifeView : MonoBehaviour
         if (collision.gameObject.CompareTag("CoinBonus"))
         {
             OnCoinBonusCollision?.Invoke();
-            return;
+
         }
-        if (collision.gameObject.tag == "TargetCicle")//CompareTag("TargetCicle"))
+        if (collision.gameObject.CompareTag("TargetCicle"))
         {
             CollisionObject = collision.gameObject;
             OnTargetCicleCollision?.Invoke();
-            return;
+
+        }
+        if (collision.gameObject.CompareTag("Knife"))
+        {
+            OnKnifeCollision?.Invoke();
+            Debug.Log(111);
         }
     }
 
@@ -41,27 +48,23 @@ public class KnifeView : MonoBehaviour
     {
         _rigidbody.bodyType = RigidbodyType2D.Kinematic;
     }
-    /*
+    
+    public void ActivedBoxCollider()
+    {
+        _boxCollider.enabled = true;
+    }
+    public void HitKnifeByKnife()
+    {
+        gameObject.transform.Rotate(10, 0, 10);
+        gameObject.transform.Translate(10, -10, 0);
+    }
     private void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (collision.gameObject.CompareTag("CoinBonus"))
-		{
-			OnCoinBonusCollision?.Invoke();
-		return;
-		}
-        if (collision.gameObject.tag == "TargetCicle")//CompareTag("TargetCicle"))
-        {
-            Debug.Log(1);
-            OnKnifeCollision?.Invoke();
-            CollisionObject = collision.gameObject;
-           
-            return;
-        }
 
-        if (collision.gameObject == gameObject)
+        if (collision.gameObject == this)
         {
             OnKnifeCollision?.Invoke();
-return;
+            Debug.Log(111);
         }
-    }*/
+    }
 }

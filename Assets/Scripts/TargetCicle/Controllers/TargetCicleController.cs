@@ -3,7 +3,7 @@
     private readonly TargetCicleView _targetCicleView;
     private readonly Pool<TargetCicleView> _targetCiclePool;
     private TargetCicleFactory _cicleFactory;
-    private float _speedRotation = 30;
+    private float _speedRotation = 100f;
 
     public TargetCicleController (TargetCicleFactory _cicleFactory)
     {
