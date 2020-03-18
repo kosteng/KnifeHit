@@ -3,18 +3,22 @@ using UnityEngine;
 
 public class KnifeView : MonoBehaviour
 {
-
+    private float _speed = 5;
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private BoxCollider2D _boxCollider;
 
-    public event Action OnKnifeCollision;
+    public delegate void KnifeByKnifeCollisionHandler(KnifeView knife);
+    public delegate void KnifeByTargetCicleCollisionHandler(KnifeView knife, GameObject targetCicle);
+    public event KnifeByKnifeCollisionHandler OnKnifeCollision;
     public event Action OnCoinBonusCollision;
-    public event Action OnTargetCicleCollision;
+    public event KnifeByTargetCicleCollisionHandler OnTargetCicleCollision;
 
     public GameObject CollisionObject { get; private set; }
 
     public float Speed;
 	public bool IsReadyToMove = false;
+    public bool IsCollisionKnifeByKnife = false;
+
 	public void Move()
 	{
 		transform.Translate(0f, Speed * Time.deltaTime, 0f);
@@ -28,43 +32,29 @@ public class KnifeView : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("TargetCicle"))
         {
-            CollisionObject = collision.gameObject;
-            OnTargetCicleCollision?.Invoke();
-
+            OnTargetCicleCollision?.Invoke(this, collision.gameObject);
         }
+
         if (collision.gameObject.CompareTag("Knife"))
         {
-            OnKnifeCollision?.Invoke();
+            OnKnifeCollision?.Invoke(this);
             Debug.Log(111);
         }
     }
 
-    public void RigidbodyDynamicBodyType()
+    public void HitKnifeByKnifeMove()
     {
-        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+        gameObject.transform.Translate(_speed * Time.deltaTime, -_speed * Time.deltaTime, 0);
     }
 
-    public void RigidbodyKinematicBodyType()
+    public void MoveToStartPosition()
     {
-        _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+        transform.Translate(0, 10 * Time.deltaTime, 0);
     }
-    
-    public void ActivedBoxCollider()
-    {
-        _boxCollider.enabled = true;
-    }
-    public void HitKnifeByKnife()
-    {
-        gameObject.transform.Rotate(10, 0, 10);
-        gameObject.transform.Translate(10, -10, 0);
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-	{
 
-        if (collision.gameObject == this)
-        {
-            OnKnifeCollision?.Invoke();
-            Debug.Log(111);
-        }
+    public void BoxColliderOff()
+    {
+        _boxCollider.enabled = false;
     }
+
 }

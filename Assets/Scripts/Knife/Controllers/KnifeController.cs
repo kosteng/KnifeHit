@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class KnifeController 
 {
-	private const int CountKnifiesOnLevel = 100;
+	private const int CountKnifiesOnLevel = 10;
 	private const int LeftMouseButton = 0;
 	private int indexCurrentKnife;
-	private int indexKnifeHit;
 	private bool isEmptyKnifies;
     private List<KnifeView> _knifeViewsToScene;
     private KnifeView _currentKnife;
     private readonly Pool<KnifeView> _knifePool;
     private readonly KnifeFactory _knifeFactory;
 
+
     public KnifeController (KnifeFactory knifeFactory)
     {
         _knifeViewsToScene = new List<KnifeView>();
         _knifePool = new Pool<KnifeView>(knifeFactory);
     }
+
     public void Start()
     {
         indexCurrentKnife = 0;
-		indexKnifeHit = 0;
 		isEmptyKnifies = false;
 		GetKnifies(CountKnifiesOnLevel);
         SetNextKnife();
@@ -30,15 +30,17 @@ public class KnifeController
 
     public void Update()
     {
+        if (_currentKnife.transform.position.y <= -4f)
+            _currentKnife.MoveToStartPosition();
         if (Input.GetMouseButtonDown(LeftMouseButton) && !isEmptyKnifies)
         {
             _currentKnife.IsReadyToMove = true;
-            _currentKnife.ActivedBoxCollider();
         }
         if (_currentKnife.IsReadyToMove)
-            SetNextKnife();
+            SetNextKnife();       
 		MoveAllKnifies();
-	}
+        knifekill();
+    }
 
     private void GetKnifies (int count)
     {
@@ -57,7 +59,6 @@ public class KnifeController
 		}
 		_currentKnife = _knifeViewsToScene[indexCurrentKnife];
         _currentKnife.gameObject.SetActive(true);
-
 		indexCurrentKnife++;
 	}
     
@@ -70,24 +71,43 @@ public class KnifeController
 		}
 	}
 
-    private void Hit()
+    private void CollisionInTargetCicle(KnifeView knife, GameObject targetCicle)
     {
-        _knifeViewsToScene[indexKnifeHit].transform.SetParent(_knifeViewsToScene[indexKnifeHit].CollisionObject.transform);
-        _knifeViewsToScene[indexKnifeHit].IsReadyToMove = false;
-		indexKnifeHit++;
-	}
+        knife.transform.SetParent(targetCicle.transform);
+        knife.IsReadyToMove = false;
+        knife.OnKnifeCollision -= HitKnifeByKnife;
+    }
 
     private void Subscribe()
     {
     	foreach (var knife in _knifeViewsToScene)
         {
-            knife.OnTargetCicleCollision += Hit;
+            knife.OnTargetCicleCollision += CollisionInTargetCicle;
             knife.OnKnifeCollision += HitKnifeByKnife;
+            knife.OnCoinBonusCollision += CoinBonusCollision;
         }
     }
 
-    private void HitKnifeByKnife()
+    private void knifekill()
     {
-        _knifeViewsToScene[indexCurrentKnife].HitKnifeByKnife();
+        for (int i = 0; i < _knifeViewsToScene.Count; i++)
+        {
+            if (_knifeViewsToScene[i].IsCollisionKnifeByKnife)
+                _knifeViewsToScene[i].HitKnifeByKnifeMove();
+        }
+        
+    }
+
+    private void HitKnifeByKnife(KnifeView knife)
+    {
+        knife.IsReadyToMove = false;
+        knife.IsCollisionKnifeByKnife = true;
+        knife.OnTargetCicleCollision -= CollisionInTargetCicle;
+        knife.BoxColliderOff();
+    }
+
+    private void CoinBonusCollision()
+    {
+
     }
 }
